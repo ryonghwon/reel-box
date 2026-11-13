@@ -1,0 +1,23 @@
+{
+  "target": "darwin-arm64",
+  "python": "3.12.14",
+  "packages": [
+    {
+      "name": "@ffmpeg-installer/darwin-arm64",
+      "version": "4.1.5",
+      "integrity": "sha512-hYqTiP63mXz7wSQfuqfFwfLOfwwFChUedeCVKkBtl/cliaTM7/ePI9bVzfZ2c+dWu3TqCwLDRWNSJ5pqZl8otA==",
+      "sha256": "8a4306e64ed3ba3cb5e51093266c8c72f65314bec146c899a50426f21aaa0f44"
+    },
+    {
+      "name": "@ffprobe-installer/darwin-arm64",
+      "version": "5.0.1",
+      "integrity": "sha512-vwNCNjokH8hfkbl6m95zICHwkSzhEvDC3GVBcUp5HX8+4wsX10SP3B+bGur7XUzTIZ4cQpgJmEIAx6TUwRepMg==",
+      "sha256": "27069fc32879761968823c3ce5353d3c6573f5df7d83d40b60bc2d878e886d39"
+    }
+  ],
+  "node": {
+    "version": "v24.22.1",
+    "source": "https://nodejs.org/dist/v24.22.1/node-v24.22.1-darwin-arm64.tar.gz",
+    "sha256": "89c682593d76cd44233fa53b1563264e7de9cbb189cad169135c5b4fadfbc0a7"
+  }
+}

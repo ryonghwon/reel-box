@@ -1,0 +1,50 @@
+# Local secrets and account sessions
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*cookie*
+*Cookies*
+*session*.json
+# User libraries, databases, logs and exports
+data/
+downloads/
+userData/
+Partitions/
+backups/
+*.sqlite*
+*.db
+*.db-*
+*.log
+*.csv
+saved_posts.*
+saved_collections.*
+instagram-*.zip
+# Dependencies, caches and build artifacts
+node_modules
+.next/
+out/
+.venv/
+venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.pyc
+*.tsbuildinfo
+.build/
+work/
+desktop/payload/
+desktop/release*/
+desktop/web/
+desktop/preview.cjs
+*.app/
+*.exe
+*.dmg
+*.zip
+.DS_Store
+test-results/
+playwright-report/
+
+# Desktop web staging
+desktop/.web-build/

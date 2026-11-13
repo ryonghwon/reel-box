@@ -1,0 +1,288 @@
+export type MediaJob = {
+  id: string;
+  url: string;
+  platform: string;
+  status: string;
+  mode: string;
+  progress: number;
+  error_code: string | null;
+  error_message: string | null;
+  retryable: number;
+  note: string | null;
+  created_at: number;
+  expires_at: number | null;
+  metadata: {
+    browser_metadata_version?: number;
+    media_type?: string;
+    title?: string;
+    thumbnail?: string;
+    uploader?: string;
+    duration?: number;
+    max_height?: number;
+    width?: number;
+    height?: number;
+    codecs?: string[];
+    available_heights?: number[];
+  };
+  parent_id?: string;
+  entry_index?: number | null;
+  job_ids?: string[];
+  members?: MediaJob[];
+  image_count?: number;
+  pending_count?: number;
+  completed_count?: number;
+  display_caption?: string;
+  options?: {
+    browser_import?: boolean;
+    source?: string;
+    output_format?: "mp4" | "original";
+    height?: number | null;
+  };
+  files: { id: string; name: string; size: number }[];
+};
+export type Settings = {
+  download_directory?: string;
+  folder: string;
+  retention_days: number;
+  filename_template: string;
+  host_storage_root?: string;
+  storage_root?: string;
+};
+export type Health = {
+  cooldowns?: { platform: string; until: number }[];
+  desktop?: boolean;
+  ok: boolean;
+  queue: boolean;
+  workers: number;
+  yt_dlp: string;
+  free_bytes: number;
+};
+export async function api(path: string, method = "GET", body?: unknown) {
+  const r = await fetch(`/api/${path}`, {
+    method,
+    headers: body ? { "Content-Type": "application/json" } : undefined,
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  const data = await r
+    .json()
+    .catch(() => ({ detail: "서버 응답을 확인할 수 없습니다." }));
+  if (!r.ok)
+    throw new Error(
+      typeof data.detail === "string" ? data.detail : "입력 내용을 확인하세요.",
+    );
+  return data;
+}
+export function Icon({ name, size = 20 }: { name: string; size?: number }) {
+  const shapes: Record<string, React.ReactNode> = {
+    compact: (
+      <>
+        {[3, 10, 17].flatMap((x) =>
+          [3, 10, 17].map((y) => (
+            <rect key={`${x}-${y}`} x={x} y={y} width="4" height="4" rx=".7" />
+          )),
+        )}
+      </>
+    ),
+    search: (
+      <>
+        <circle cx="10.5" cy="10.5" r="6.5" />
+        <path d="m16 16 5 5" />
+      </>
+    ),
+    plus: <path d="M12 5v14M5 12h14" />,
+    bookmark: <path d="M6 3h12v18l-6-4-6 4Z" />,
+    list: (
+      <>
+        <path d="M9 6h12M9 12h12M9 18h12M3 6h1M3 12h1M3 18h1" />
+      </>
+    ),
+    external: (
+      <>
+        <path d="M14 3h7v7m0-7L10 14M10 3H3v18h18v-7" />
+      </>
+    ),
+    chevron: <path d="m9 5 7 7-7 7" />,
+    upload: (
+      <>
+        <path d="M12 16V3m-5 5 5-5 5 5M4 16v5h16v-5" />
+      </>
+    ),
+    music: (
+      <>
+        <path d="M9 18V5l11-2v13M9 8l11-2" />
+        <ellipse cx="6" cy="18" rx="3" ry="2" />
+        <ellipse cx="17" cy="16" rx="3" ry="2" />
+      </>
+    ),
+    download: (
+      <>
+        <path d="M12 3v12m-5-5 5 5 5-5" />
+        <path d="M4 15v5h16v-5" />
+      </>
+    ),
+    grid: (
+      <>
+        <rect x="3" y="3" width="7" height="7" rx="1.5" />
+        <rect x="14" y="3" width="7" height="7" rx="1.5" />
+        <rect x="3" y="14" width="7" height="7" rx="1.5" />
+        <rect x="14" y="14" width="7" height="7" rx="1.5" />
+      </>
+    ),
+    video: (
+      <>
+        <rect x="3" y="5" width="13" height="14" rx="3" />
+        <path d="m16 10 5-3v10l-5-3" />
+      </>
+    ),
+    settings: (
+      <>
+        <path d="M4 7h16M4 17h16" />
+        <circle cx="9" cy="7" r="3" />
+        <circle cx="15" cy="17" r="3" />
+      </>
+    ),
+    link: (
+      <>
+        <path
+          d="m10 14 4-4m-6 6-1 1a4 4 0 0 1-6-6l4-4a4 4 0 0 1 6 0m2 2 1-1a4 4 0 0 1 6 6l-4 4a4 4 0 0 1-6 0"
+          transform="translate(1 -1)"
+        />
+      </>
+    ),
+    arrow: <path d="M4 12h16m-6-6 6 6-6 6" />,
+    check: <path d="m5 12 4 4L19 6" />,
+    refresh: (
+      <>
+        <path d="M20 7v5h-5M4 17v-5h5" />
+        <path d="M6 7a7 7 0 0 1 12-2l2 3M4 16l2 3a7 7 0 0 0 12-2" />
+      </>
+    ),
+    folder: <path d="M3 6a2 2 0 0 1 2-2h5l2 3h7a2 2 0 0 1 2 2v10H3Z" />,
+    clock: (
+      <>
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 7v5l3 2" />
+      </>
+    ),
+    close: <path d="m6 6 12 12M6 18 18 6" />,
+    info: (
+      <>
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 11v6m0-10v1" />
+      </>
+    ),
+    play: <path d="m9 5 11 7-11 7Z" />,
+    file: (
+      <>
+        <path d="M6 3h8l4 4v14H6Z" />
+        <path d="M14 3v5h4M9 13h6m-6 4h4" />
+      </>
+    ),
+    trash: (
+      <>
+        <path d="M3 6h18M9 3h6m-9 3 1 15h10l1-15M10 10v7m4-7v7" />
+      </>
+    ),
+  };
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      {shapes[name] || shapes.file}
+    </svg>
+  );
+}
+
+export const labels: Record<string, string> = {
+  queued_metadata: "정보 확인 대기",
+  extracting: "정보 확인 중",
+  ready: "다운로드 가능",
+  queued_download: "다운로드 대기",
+  downloading: "다운로드 중",
+  completed: "저장 완료",
+  failed: "실패",
+  expired: "기간 만료",
+  expiring: "정리 중",
+  expanded: "목록 펼침",
+  recording: "가져오는 중",
+};
+export const names: Record<string, string> = {
+  instagram: "Instagram",
+  youtube: "YouTube",
+  vimeo: "Vimeo",
+  tiktok: "TikTok",
+  x: "X",
+  threads: "Threads",
+  facebook: "Facebook",
+  recording: "녹화·변환",
+};
+export const busyStates = new Set([
+  "queued_metadata",
+  "extracting",
+  "queued_download",
+  "downloading",
+  "recording",
+  "expiring",
+]);
+export const sizeLabel = (n: number) =>
+  n >= 1024 ** 3
+    ? `${(n / 1024 ** 3).toFixed(1)} GB`
+    : `${(n / 1024 ** 2).toFixed(1)} MB`;
+export function duration(n?: number) {
+  return n
+    ? `${Math.floor(n / 60)}:${Math.floor(n % 60)
+        .toString()
+        .padStart(2, "0")}`
+    : "—";
+}
+export function Status({ job }: { job: MediaJob }) {
+  return (
+    <span className={`status ${job.status}`}>
+      <span className="dot" />
+      {labels[job.status] || job.status}
+      {job.status === "downloading" ? ` ${Math.round(job.progress)}%` : ""}
+    </span>
+  );
+}
+export function Thumbnail({ job }: { job: MediaJob }) {
+  return (
+    <div className="thumbnail">
+      <Icon
+        name={
+          job.metadata.media_type === "image_group"
+            ? "grid"
+            : job.mode === "audio"
+              ? "music"
+              : "video"
+        }
+        size={28}
+      />
+      {job.metadata.thumbnail ? (
+        <img
+          key={job.metadata.thumbnail}
+          src={job.metadata.thumbnail}
+          alt=""
+          loading="lazy"
+          referrerPolicy="no-referrer"
+          onError={(e) => {
+            e.currentTarget.style.display = "none";
+          }}
+        />
+      ) : null}
+      <span className="duration">{duration(job.metadata.duration)}</span>
+      {job.status === "downloading" ? (
+        <div className="progress">
+          <div style={{ width: `${job.progress}%` }} />
+        </div>
+      ) : null}
+    </div>
+  );
+}

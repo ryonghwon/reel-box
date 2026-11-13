@@ -1,0 +1,25 @@
+Reel Box desktop 1.5.0
+
+Electron (MIT and Chromium/BSD third-party licenses): https://github.com/electron/electron
+Electron's LICENSE and LICENSES.chromium.html are included by the packager.
+Python 3.12.14 (PSF): https://www.python.org/psf/license/
+Portable Python distributions: https://github.com/astral-sh/python-build-standalone
+Node.js (MIT and third-party licenses): https://nodejs.org/
+Next.js, React, FastAPI, uvicorn and other dependencies retain their distribution licenses.
+Python dependency license files are kept in their installed *.dist-info directories.
+
+FFmpeg and FFprobe: https://ffmpeg.org/
+Binary distributions from @ffmpeg-installer and @ffprobe-installer:
+https://github.com/kribblo/node-ffmpeg-installer
+https://github.com/SavageCore/node-ffprobe-installer
+These builds include GPL components such as libx264. Their upstream build/source
+information and component license details are described in each distribution.
+FFmpeg source: https://ffmpeg.org/download.html
+libx264 source: https://code.videolan.org/videolan/x264
+Per-target runtime manifests record package versions, integrity values and Node hashes.
+Reel Box application source is provided separately from third-party runtimes.
+
+Platform logo paths: Simple Icons 16.0.0 (CC0-1.0).
+https://github.com/simple-icons/simple-icons/tree/16.0.0
+Trademark rights remain with their respective owners.
+Reel Box film-reel/archive-box mark is original artwork for this app.

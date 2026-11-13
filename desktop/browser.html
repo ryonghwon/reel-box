@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ko">
+  <meta charset="utf-8" /><meta
+    http-equiv="Content-Security-Policy"
+    content="default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; img-src https://*.cdninstagram.com https://*.fbcdn.net; connect-src 'none'"
+  /><title>Reel Box · Instagram에서 저장</title
+  ><style>
+    :root {
+      color-scheme: only light;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      background: #fff;
+      color: #292929;
+      font:
+        12px -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+    }
+    header {
+      height: 240px;
+      padding: 12px 16px;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    form,
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    strong {
+      font-size: 13px;
+    }
+    input {
+      min-width: 120px;
+      flex: 1;
+    }
+    input,
+    select,
+    button {
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background: white;
+      padding: 7px 10px;
+      font: inherit;
+      color: inherit;
+    }
+    button {
+      cursor: pointer;
+    }
+    button.primary {
+      background: #0b68df;
+      border-color: #0b68df;
+      color: white;
+    }
+    button:disabled {
+      opacity: 0.45;
+      cursor: default;
+    }
+    [hidden] {
+      display: none !important;
+    }
+    #batch-status {
+      flex: 1;
+    }
+    select {
+      flex: 1;
+      min-width: 150px;
+    }
+    p {
+      margin: 0;
+      color: #777;
+      line-height: 1.5;
+    }
+    #status {
+      color: #3e576d;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    #preview {
+      width: 34px;
+      height: 34px;
+      object-fit: cover;
+      background: #eee;
+      border-radius: 3px;
+    }
+    #preview:not([src]) {
+      display: none;
+    }
+    .label {
+      color: #777;
+      font-size: 11px;
+    }
+  </style>
+  <header>
+    <form id="go">
+      <strong>Instagram에서 저장</strong
+      ><input
+        id="url"
+        aria-label="Instagram 게시물 링크"
+        placeholder="Instagram 게시물 또는 릴스 링크"
+      /><button>이동</button>
+    </form>
+    <p>
+      아래 공식 사이트에서 로그인하세요. 여러 항목은 일괄 시작으로 처리하고, 한
+      항목을 직접 저장하려면 재생 후 미디어 확인을 누르세요.
+    </p>
+    <div class="row">
+      <button id="inspect">현재 보이는 미디어 확인</button
+      ><img id="preview" alt="선택 미디어" /><select
+        id="choices"
+        aria-label="저장할 미디어"
+      >
+        <option value="">미디어를 먼저 확인하세요</option></select
+      ><button class="primary" id="save" disabled>선택 미디어 저장</button>
+    </div>
+    <p id="status" role="status">
+      로그인은 이 창에만 유지됩니다. 다른 브라우저의 로그인은 연결되지 않습니다.
+    </p>
+    <div class="row" id="batch" hidden>
+      <strong id="batch-status"></strong
+      ><button class="primary" id="batch-start">일괄 시작</button
+      ><button id="batch-pause" disabled>일시정지</button>
+    </div>
+    <p class="label">
+      보이는 미디어의 확인된 화질로 저장합니다. 같은 링크의 실패 항목은 완료
+      결과에 연결됩니다. 기존 파일은 유지됩니다.
+    </p>
+  </header>
+  <script src="browser-ui.js"></script>
+</html>

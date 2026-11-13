@@ -1,0 +1,103 @@
+{
+  "name": "reelbox-desktop",
+  "version": "1.5.0",
+  "description": "Personal video library for Windows and macOS",
+  "author": "Reel Box",
+  "license": "MIT",
+  "private": true,
+  "main": "main.cjs",
+  "scripts": {
+    "build:web": "node scripts/build-web.cjs",
+    "prepare:mac": "node scripts/prepare.cjs darwin-arm64",
+    "prepare:win": "node scripts/prepare.cjs win32-x64",
+    "build:mac": "electron-builder --mac dir --arm64 --publish never",
+    "build:win": "electron-builder --win nsis --x64 --publish never",
+    "test": "node --test tests/*.test.cjs",
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "45.0.0",
+    "electron-builder": "26.18.0"
+  },
+  "build": {
+    "appId": "local.reelbox.desktop",
+    "productName": "Reel Box",
+    "asar": true,
+    "directories": {
+      "output": "release",
+      "buildResources": "assets"
+    },
+    "files": [
+      "main.cjs",
+      "preload.cjs",
+      "capture.html",
+      "splash.html",
+      "package.json",
+      "assets/icon.png",
+      "browser-window.cjs",
+      "browser-media.cjs",
+      "browser-preload.cjs",
+      "browser-ui.js",
+      "browser.html",
+      "browser-page.cjs",
+      "browser-batch.cjs"
+    ],
+    "extraResources": [
+      {
+        "from": "payload/${os}-${arch}",
+        "to": "runtime",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "web",
+        "to": "web"
+      },
+      {
+        "from": "../backend/app",
+        "to": "backend/app",
+        "filter": [
+          "**/*.py"
+        ]
+      },
+      {
+        "from": "THIRD-PARTY-NOTICES.txt",
+        "to": "THIRD-PARTY-NOTICES.txt"
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.video",
+      "identity": null,
+      "target": [
+        "dir"
+      ],
+      "hardenedRuntime": false,
+      "extendInfo": {
+        "NSMicrophoneUsageDescription": "시스템 화면 공유 기능으로 사용자가 선택한 영상 소리를 포함할 때 사용합니다.",
+        "NSScreenCaptureUsageDescription": "사용자가 직접 선택한 화면이나 창을 녹화합니다."
+      },
+      "icon": "assets/icon.icns"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "artifactName": "Reel-Box-${version}-Windows-x64-Setup.exe",
+      "icon": "assets/icon.ico",
+      "signExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowElevation": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "runAfterFinish": false,
+      "deleteAppDataOnUninstall": false,
+      "installerIcon": "assets/icon.ico",
+      "uninstallerIcon": "assets/icon.ico"
+    }
+  }
+}

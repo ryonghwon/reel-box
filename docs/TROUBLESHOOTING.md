@@ -1,45 +1,57 @@
-# 문제 해결
+# Troubleshooting
 
-## 연결 확인 중
+## Mac blocks the application
 
-데스크톱 앱을 다시 실행합니다. 앱 데이터 폴더의 `logs/desktop.log`에 시작 오류가 기록됩니다. 필수 앱 파일이 없다는 메시지가 나오면 앱 패키지 전체를 다시 설치합니다. 데이터 폴더를 삭제할 필요는 없습니다.
+Mac packages are ad-hoc signed for integrity but are not notarized by Apple. For a warning that Apple cannot verify the developer, confirm the download source and checksum. If you choose to allow the app, use **System Settings > Privacy & Security > Open Anyway**, following [Apple's instructions](https://support.apple.com/en-us/102445).
 
-Docker에서는 `docker compose ps`로 서비스 상태를 확인합니다. 대기열이 진행되지 않으면 `api`, `worker`, `maintenance`, `redis` 로그를 확인합니다. 웹 서버와 API는 동일한 `API_TOKEN`을 사용해야 합니다.
+If macOS says the app is **damaged**, download the full archive again and replace the app bundle. Keep your library, download folders, and app-data directory. Report persistent failures with the package name and macOS version. Do not disable Gatekeeper or system-wide security settings.
 
-## 실패한 다운로드
+## The app stays on Connecting
 
-상세 패널에 표시된 오류 코드와 원인에 따라 처리합니다.
+Restart Reel Box. Startup failures are recorded in `logs/desktop.log` inside the app-data directory. If required runtime files are missing, reinstall the complete app package. Reinstalling does not require deleting the library’s data directory.
 
-| 오류 또는 상태 | 조치 |
+For Docker, run `docker compose ps` and inspect the `api`, `worker`, `maintenance`, and `redis` logs. The web service and API must use the same `API_TOKEN`. Keep all queue services running while downloads are active.
+
+## An item failed to download
+
+Select the item and read the error in **Details**. The error code identifies which action is useful:
+
+| Error or condition | What to do |
 | --- | --- |
-| 로그인·연령·대상 제한 | Instagram 전용 창에서 계정으로 게시물을 열고 필요한 확인을 마친 뒤 재시도 |
-| `RATE_LIMITED` | 상단에 표시된 재개 시각까지 대기. 반복해서 재등록하지 않기 |
-| `UNAVAILABLE` | 원본 링크에서 게시물이 남아 있는지 확인 |
-| `NETWORK_ERROR` | 네트워크 연결을 확인한 뒤 실패 재시도 |
-| `DISK_FULL` | 저장 디스크의 여유 공간 확보 |
-| `STORAGE_UNAVAILABLE` | 외장 디스크 연결과 폴더 접근 권한 확인 |
-| `SIZE_LIMIT` | 파일 제한 확인. 영상은 더 낮은 해상도를 선택해 별도 작업으로 등록 |
-| `NO_MEDIA` | 선택한 영상·오디오 모드에 해당하는 미디어가 있는지 확인 |
-| `DRM_PROTECTED` | 해당 파일은 앱에서 다운로드하지 않음 |
+| Sign-in, age verification, or audience restriction | For Instagram, open the item in the app’s Instagram window and complete the required verification with your account. Retry only if the post opens normally. |
+| `RATE_LIMITED` | Wait until the resume time shown in the app. Repeatedly adding the same URLs does not remove the platform limit. |
+| `UNAVAILABLE` | Open the source URL to check whether the post still exists and is accessible. |
+| `NETWORK_ERROR` | Restore the connection, then retry the failed item. |
+| `DISK_FULL` | Free space on the destination drive. |
+| `STORAGE_UNAVAILABLE` | Reconnect the drive and check folder permissions. |
+| `SIZE_LIMIT` | Check the file-size limit. For video, consider a lower available resolution. |
+| `NO_MEDIA` | Check that the post contains media supported by the selected download mode. |
+| `DRM_PROTECTED` | This media cannot be downloaded by Reel Box. |
 
-앱의 Instagram 로그인은 Chrome, Safari 등 외부 브라우저와 공유되지 않습니다. Vimeo 등 다른 플랫폼에서 인증이 필요한 항목은 원본 사이트의 다운로드 기능을 확인합니다.
+The Instagram window has its own session. Signing in in Chrome or Safari does not connect that session to Reel Box. For Vimeo and other platforms that require unsupported authentication, use the original site’s download option when available.
 
-## 저장 목록이 계속 표시되는 경우
+## Import complete, but the list is still visible
 
-가져오기 화면은 등록 결과와 진행 상태를 보관합니다. 등록이 완료됐다면 **다른 파일 가져오기**로 화면을 초기화할 수 있습니다. 이 동작은 등록한 라이브러리 항목을 삭제하지 않습니다.
+The import screen retains its summary and progress so an interrupted list can be resumed. **Import another file** clears that screen while keeping items already added to the library. Import completion means the links were registered; individual downloads may still be running.
 
-작업 기록 한도에 도달하면 등록이 중지되고 남은 링크를 이어서 처리할 수 있습니다. 작업 삭제는 미디어 파일도 삭제하므로 내보낼 파일이 있는지 먼저 확인합니다. 필요한 경우 실행 환경의 `MAX_JOBS`를 조정합니다.
+If the task limit is reached, the remaining links stay available to resume or export. Deleting a task also deletes its managed files. Save any copies you need before removing records, or adjust the configured `MAX_JOBS` limit within its supported range.
 
-## 파일을 찾을 수 없는 경우
+## There are more library items than source links
 
-**저장 폴더 열기**로 디스크 연결 상태를 확인합니다. 항목 등록 후 저장 폴더를 변경했다면 기존 파일은 이전 위치에 남아 있습니다. 파일을 수동 이동한 경우 원래 위치로 복원합니다.
+A post may contain several videos and an image group. Those attachments share a source URL but can appear as separate library items. Compare the source-link count with the item’s attachment information before deleting what looks like a duplicate.
 
-자동 삭제를 사용 중이라면 기간 만료 여부를 확인합니다. 파일이 삭제되더라도 작업 기록은 남습니다. 별도 위치로 내보낸 사본은 영향을 받지 않습니다.
+A signed-in Instagram save is linked to an existing record when the source and attachment can be matched. If several different attachments are present, the app keeps them distinct.
 
-## 녹화에 소리가 없는 경우
+## A saved file cannot be found
 
-화면 공유 창의 오디오 공유 옵션을 확인합니다. 선택한 화면·창과 운영체제가 해당 공유 방식을 지원해야 합니다. 녹화 전 짧은 구간으로 화면과 소리를 확인합니다.
+Check that its drive is connected. Changing the download folder affects newly added items; earlier files remain at their previous locations. If a file was moved manually, restore it to the recorded location.
 
-## 오류 보고
+If auto-delete is enabled, check the expiry date. Expired files can be removed while their records remain visible. Copies saved outside the managed library are not removed by this setting.
 
-앱 버전, 운영체제, 오류 코드, 재현 순서를 함께 기록합니다. 공개 이슈에는 로그인 정보, 원본 내보내기 ZIP, 개인 라이브러리, 비공개 게시물 링크를 첨부하지 않습니다. 로그를 공유할 때는 계정과 로컬 경로를 제거합니다.
+## A recording has no sound
+
+Check whether the system sharing dialog offers audio for the selected tab, window, or screen. Availability varies by operating system and source. Record and play a short segment before capturing the full clip. A protected video may appear black; recording does not remove DRM restrictions.
+
+## Report a problem
+
+Include the app version, operating system, error code, and steps needed to reproduce the issue. Remove account information and personal paths from logs. Do not attach sign-in data, account export archives, private library contents, or private post URLs to a public issue.

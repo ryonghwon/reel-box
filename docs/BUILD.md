@@ -1,26 +1,26 @@
-# 설치와 빌드
+# Build and run
 
-## 실행 구성
+## Runtime options
 
-| 구성 | 필요한 환경 | 실행 방식 |
+| Distribution | Requirements | Startup |
 | --- | --- | --- |
-| 데스크톱 패키지 | macOS Apple Silicon 또는 Windows x64 | 앱이 로컬 서버와 대기열을 함께 실행 |
-| Docker | Docker Engine/Desktop, Compose v2 | 로컬 브라우저에서 사용 |
+| Desktop package | Apple Silicon macOS or Windows x64 | The app starts its local service and queue automatically |
+| Docker | Docker Engine/Desktop and Compose v2 | Open the local web interface after starting the services |
 
-이 저장소에는 소스와 패키징 설정을 제공합니다. Python, Node.js, FFmpeg 런타임과 설치 파일은 Git 소스에 포함하지 않습니다.
+Source control contains application code and packaging configuration. Runtime binaries and installers are distributed as release assets, not committed to Git.
 
-## Docker
+## Run with Docker
 
-macOS와 Linux에서는 저장소 루트에서 실행합니다.
+On macOS or Linux, run from the repository root:
 
 ```sh
 sh scripts/setup.sh
 docker compose up --build -d
 ```
 
-Windows에서는 Docker Desktop을 Linux 컨테이너 모드로 실행하고 `Start-Reelbox.cmd`를 엽니다. 설정 파일은 첫 실행 때 생성됩니다. 기존 `.env`는 덮어쓰지 않습니다.
+On Windows, run Docker Desktop in Linux-container mode and open `Start-Reelbox.cmd`. Setup creates `.env` on first use and leaves an existing file intact.
 
-기본 주소는 [localhost:3000](http://localhost:3000)입니다. 서비스는 로컬 인터페이스에만 공개됩니다. 다른 사용자에게 공개하는 서버 구성에는 별도의 사용자 인증과 접근 제어가 필요합니다.
+Open [localhost:3000](http://localhost:3000), or the configured `WEB_PORT`. Services bind to local interfaces. Hosting for other users requires a separate authentication and access-control design.
 
 ```sh
 docker compose ps
@@ -28,20 +28,20 @@ docker compose logs --tail=100 api worker web
 docker compose down
 ```
 
-`down`은 컨테이너를 종료하고 볼륨은 유지합니다. `down -v`는 데이터 볼륨을 삭제하므로 일반 종료에는 사용하지 않습니다. 작업 대기열을 계속 처리하려면 API, worker, maintenance, Redis 서비스를 실행해 둡니다.
+`down` stops containers and preserves volumes. `down -v` deletes data volumes and is not a normal shutdown command. Keep the API, workers, maintenance, and Redis services running while the queue is processing.
 
-## 데스크톱 빌드
+## Build desktop packages
 
-빌드 호스트는 macOS Apple Silicon입니다. Node.js 24, npm, uv, Python 3.12.14 독립 런타임을 준비합니다. macOS와 Windows 패키지는 동일한 소스에서 각각 생성합니다.
+The packaging workflow uses an Apple Silicon Mac with Node.js 24, npm, uv, and standalone Python 3.12.14 runtimes. Mac arm64 and Windows x64 packages are produced from the same source. Preparing the Windows payload also requires the host Mac Python runtime.
 
-Python 런타임은 [python-build-standalone](https://github.com/astral-sh/python-build-standalone) 배포본을 다음 위치에 준비합니다. Windows 패키징에도 호스트용 macOS Python이 필요합니다.
+Place the appropriate [python-build-standalone](https://github.com/astral-sh/python-build-standalone) distributions at:
 
 ```text
 .build/python-runtimes/cpython-3.12.14-macos-aarch64-none/bin/python3
 .build/python-runtimes/cpython-3.12.14-windows-x86_64-none/python.exe
 ```
 
-`REELBOX_BUILD_WORK`로 `.build` 위치를 변경할 수 있습니다. 저장소 루트에서 실행합니다.
+Set `REELBOX_BUILD_WORK` to use a different build-cache directory. From the repository root:
 
 ```sh
 npm ci --prefix frontend
@@ -55,13 +55,18 @@ npm run prepare:win --prefix desktop
 npm run build:win --prefix desktop
 ```
 
-런타임 준비 단계는 대상 운영체제의 Python 패키지, Node.js, FFmpeg, FFprobe를 내려받고 패키징 폴더에 배치합니다. 네트워크 연결과 압축 해제 공간이 필요합니다. 산출물은 `desktop/release/`에 생성됩니다.
+The preparation step installs target-specific Python packages and stages Node.js, FFmpeg, and FFprobe. It needs network access and enough space for downloaded and extracted runtimes. The web build stages a static export without the server-only API proxy; the desktop service handles those routes.
 
-기본 빌드는 서명·공증을 적용하지 않습니다. 외부 배포 시 macOS Developer ID 서명과 공증, Windows 코드 서명을 배포 환경에 맞게 구성합니다. [제3자 고지](../desktop/THIRD-PARTY-NOTICES.txt)와 런타임별 라이선스·소스 제공 조건도 배포물에 반영합니다.
+Packages are written to `desktop/release/`:
 
-## 코드 검사
+- `Reel-Box-<version>-macOS-arm64.zip`
+- `Reel-Box-<version>-Windows-x64-Setup.exe`
 
-Python 3.12와 FFmpeg/FFprobe가 PATH에 있어야 합니다.
+The default configuration ad-hoc signs Mac bundles and leaves Windows packages unsigned. Mac builds are not notarized. Configure Developer ID signing and notarization or Windows code signing in the distribution environment when certificates are available. Include [third-party notices](../desktop/THIRD-PARTY-NOTICES.txt) and satisfy the license and source-distribution requirements of bundled runtimes.
+
+## Validate source
+
+Use Python 3.12 and put FFmpeg/FFprobe on `PATH`.
 
 ```sh
 cd backend
@@ -84,12 +89,26 @@ npm test
 npm run build:web
 ```
 
-테스트는 임시 데이터베이스, 임시 파일과 고정 입력 데이터를 사용합니다. Redis 통합 검사는 `TEST_REDIS_URL`로 별도의 테스트 Redis를 지정합니다. 테스트용 Redis에는 사용자 데이터를 넣지 않습니다.
+Tests use temporary databases, files, and fixed inputs. Set `TEST_REDIS_URL` to a dedicated test Redis instance to run Redis integration checks. Never point these tests at a user library or a production queue.
 
-플랫폼 응답을 확인하려면 `backend`에서 이용 권한이 있는 링크를 직접 전달합니다. 이 명령은 메타데이터만 확인합니다.
+To inspect extraction for content you are authorized to access, run from `backend`:
 
 ```sh
 python probe_platforms.py URL [URL ...]
 ```
 
-패키지를 배포하기 전에 대상 운영체제에서 앱 시작·종료, 저장 폴더 선택, 다운로드, 재시작 후 작업 복구, 파일 재생을 확인합니다.
+This probe checks metadata without downloading the media. Platform responses can change independently of an app build; a successful probe is specific to the tested URL and environment.
+
+## Release checks
+
+Verify that the desktop package version, web package version, API version, tag, and asset names agree. Build from the intended source commit, generate SHA-256 checksums, and verify uploaded assets against those checksums.
+
+On each target operating system, check startup and shutdown, folder selection, a download, recovery after restart, and playback. A successful cross-platform package build alone does not establish runtime compatibility on that system. Publish target-specific validation results alongside the release when applicable.
+
+Verify the final Mac archive after packaging:
+
+```sh
+node desktop/scripts/verify-mac.cjs desktop/release/Reel-Box-0.1.0-macOS-arm64.zip
+```
+
+The check extracts a temporary copy, verifies the archive and complete code signature, and checks executable permissions. It does not certify notarization. CI runs backend tests with Redis, frontend checks, desktop unit tests, and the static web build.

@@ -1,60 +1,63 @@
-# 사용 가이드
+# User guide
 
-## 링크 추가
+## Add links and review media
 
-1. **링크 추가**를 누르거나 `⌘K` / `Ctrl+K`를 누릅니다.
-2. 게시물 링크를 붙여넣습니다. 여러 링크는 줄바꿈으로 구분합니다.
-3. 영상 또는 오디오를 선택하고 등록합니다.
-4. 정보 확인이 끝나면 제목, 썸네일, 제공 화질을 확인합니다.
-5. **다운로드 시작**을 누릅니다. 자동 다운로드를 선택했다면 정보 확인 후 바로 시작합니다.
+Select **Add links**, or press **Command+K** on Mac / **Ctrl+K** on Windows. Paste one post URL per line, choose a download mode, and select **Check links**. Each link is checked before a download starts, so you can review the title, preview, and available resolutions.
 
-같은 플랫폼·링크·다운로드 모드의 항목은 중복 등록하지 않습니다. YouTube 재생목록이나 채널은 링크 추가 창에서 허용한 경우 지정한 개수만 가져옵니다. 한 번에 최대 100개까지 지정할 수 있습니다.
+**Detect media type** finds video and image attachments. **Audio only** extracts audio from supported videos. Matching platform, URL, and download-mode combinations are not added twice.
 
-## 형식과 화질
+YouTube playlists and channels require **Import playlists and channels** in the Add links dialog. Set an entry limit of up to 100. An individual video link still adds only that video; a playlist or channel adds entries up to the chosen limit.
 
-영상의 기본 형식은 MP4입니다. **다운로드 가능** 상태에서 상세 패널의 화질 목록을 열어 최고 화질 또는 제공되는 해상도를 선택합니다. 다운로드를 시작한 항목의 화질은 변경할 수 없습니다.
+## Choose format and quality
 
-사진은 제공되는 이미지 파일로 저장합니다. 한 게시물에 사진이 여러 장 있으면 하나의 사진 묶음으로 표시하고, 영상은 개별 항목으로 표시합니다. 따라서 원본 링크 수와 라이브러리 항목 수는 다를 수 있습니다. 사진 묶음 안의 개별 파일은 상세 패널에서 확인합니다.
+MP4 is the default video format. Select an item marked **Ready to download** and use the **Details** panel to choose **Best available** or one of its detected resolutions. Quality cannot be changed after that item has started downloading.
 
-완료된 영상의 **MP4 호환본 만들기**는 H.264/AAC, 최대 720p의 별도 사본을 만듭니다. 원본은 유지합니다.
+MP4 output keeps the selected resolution and uses H.264/AAC conversion when needed for compatibility. **Original format** avoids re-encoding. A format that downloads successfully may still require an external player if the app’s preview cannot decode it.
 
-## Instagram 저장 목록
+For a completed video, **Create compatible MP4** creates a separate H.264/AAC copy at up to 720p. The original file stays in the library. This command is distinct from choosing full-resolution MP4 before downloading.
 
-1. Instagram 계정 센터에서 저장 목록을 기기로 내보냅니다. 전체 기간을 선택합니다.
-2. **Instagram 저장 목록**에서 ZIP, `saved_posts.json`, `saved_posts.html` 또는 저장 컬렉션 파일을 선택합니다.
-3. 링크 수와 중복 항목을 확인한 뒤 등록합니다.
+## Understand posts, groups, and files
 
-가져오기 파일은 32MB까지 선택할 수 있습니다. 더 큰 ZIP은 압축을 풀고 저장 목록 파일만 선택합니다. 앱은 저장된 게시물 링크를 읽으며, 내보내기 ZIP 자체를 보관하지 않습니다.
+A source link can contain more than one attachment. Reel Box groups images from the same post into one library item and displays videos as individual items. The source-link count, visible-item count, and file count can therefore differ without indicating duplicate downloads.
 
-가져온 링크와 등록 진행 상태는 저장됩니다. 등록 도중 창을 닫았다면 남은 목록을 이어서 등록할 수 있습니다. **다른 파일 가져오기**는 이 가져오기 화면만 초기화합니다. 라이브러리에 등록된 항목과 다운로드한 파일은 삭제하지 않습니다.
+Select an image group to browse its attachments in the Details panel. Open **Files** to see the actual saved files. Selecting a group for export or deletion includes its members; deleting the current image from the detail panel targets that image only.
 
-## Instagram 로그인
+## Import Instagram saved posts
 
-다운로드에 로그인이나 연령 확인이 필요한 경우 상세 패널의 **Instagram에서 열어 저장**을 사용합니다. 앱의 Instagram 창에서 직접 로그인한 뒤 게시물을 엽니다.
+Request an export in Instagram’s Accounts Center that includes **Saved**, preferably in JSON format with the full date range. When Instagram finishes preparing it, download the export to your device.
 
-여러 실패 항목은 라이브러리에서 선택하고 **로그인 후 재시도**를 누릅니다. 로그인, 추가 인증 또는 접근 확인이 필요한 지점에서는 처리가 멈춥니다. 확인을 마친 뒤 창에서 작업을 계속합니다. 한 번에 최대 500개 항목을 전달할 수 있습니다.
+1. Open **Instagram saved posts** in Reel Box.
+2. Select the ZIP, `saved_posts.json`, saved-posts HTML, or saved-collections file.
+3. Review the detected links and duplicates.
+4. Leave **Download imported media automatically** on to download after checking, or turn it off to review previews first.
+5. Select **Import and download** or **Import list**.
 
-앱의 로그인은 다른 브라우저 로그인과 별개입니다. 게시물 열람 권한과 연령 확인은 Instagram 계정의 상태를 따릅니다. 저장된 미디어는 원본 링크와 연결하며, 같은 게시물의 실패 항목을 연결할 수 있는 경우 기존 기록에 반영합니다.
+Files can be up to 32 MB. For a larger archive, extract it and select only the saved-posts file. Reel Box reads the post URLs; the archive does not itself contain all the media you saved on Instagram. The original export archive is not retained by the app.
 
-## 라이브러리와 내보내기
+Links and import progress are saved locally. **Pause import** stops adding new links while items already in the queue continue processing. Reopen the import screen to resume the remaining list. After completion, **Import another file** clears the import screen without deleting library items or downloaded files.
 
-- 검색은 제목, 작성자, 링크를 기준으로 합니다.
-- 상단 상태 탭으로 다운로드 가능, 진행 중, 완료, 실패 항목을 구분합니다.
-- 보기 버튼으로 카드, 작은 썸네일, 목록을 전환합니다.
-- 아래로 스크롤하면 다음 항목을 불러옵니다.
-- **불러온 항목 선택**은 현재 불러온 카드만 선택합니다.
+## Save posts that require Instagram sign-in
 
-선택 항목이 있으면 ZIP·CSV·다운로드·삭제는 선택한 항목에 적용됩니다. 선택이 없으면 현재 검색·필터 결과가 대상입니다. 사진 묶음을 선택하면 묶음 안의 파일이 함께 처리됩니다.
+For an Instagram item that needs authentication, select **Open in Instagram to save**. Sign in directly on Instagram’s official page inside the app, complete any verification, and open the post.
 
-**ZIP 저장**은 완료된 파일과 `manifest.csv`를 묶습니다. **CSV**에는 출처 링크, 제목, 작성자, 상태, 파일명, 크기, 등록일, 만료일이 포함됩니다. 내보낸 사본은 앱의 자동 삭제 설정과 별개입니다.
+For a single item, play the video or display the image, select **Check visible media**, then choose the matching media and save it. For several failed items, select them in the library and choose **Retry with Instagram**. The app can pass up to 500 items to this workflow. Use **Start batch** or **Continue batch** in the Instagram window.
 
-**선택 삭제** 또는 **목록 삭제**는 작업 기록과 해당 저장 파일을 삭제합니다. 진행 중인 항목은 제외합니다. 파일을 보존하려면 삭제 전에 다른 위치에 사본을 저장합니다.
+The batch pauses when sign-in, additional verification, or access review is needed. Complete the step yourself, then continue. Sign-in does not guarantee access to every post, and it does not automatically retry every failure in the library.
 
-## 화면 녹화
+The app’s Instagram session is separate from Chrome, Safari, and other browsers. Saved media is associated with its source URL. Where the attachment can be matched, a successful result updates the existing failed item instead of leaving another copy of the same record.
 
-1. **화면 녹화**에서 녹화할 화면이나 창을 선택합니다.
-2. 필요한 경우 화면 공유 창에서 오디오도 공유합니다.
-3. 녹화를 시작하고 필요한 구간을 재생한 뒤 중지합니다.
-4. 저장하면 MP4로 변환되어 라이브러리에 추가됩니다.
+## Browse and export
 
-녹화는 최대 10분 또는 256MB에서 중지됩니다. 결과는 최대 720p·30fps로 변환됩니다. 오디오 공유 가능 여부는 운영체제와 화면 공유 방식에 따라 다릅니다.
+Search by title, creator, or URL. Use the platform sidebar and status tabs to narrow the library, and switch between cards, compact thumbnails, or a list. Scrolling loads more items. **Select loaded items** selects the cards currently loaded, not every item that might match the filter.
+
+With a selection, ZIP, CSV, download, and delete actions apply to that selection. Without a selection, those actions use the current search and filter results. Only completed files can be included in an export.
+
+**Save a copy** writes an individual file elsewhere. A ZIP export includes media files and `manifest.csv`. The CSV records source URLs, titles, creators, status, filenames, sizes, and dates. Copies exported outside the library are not managed by the app’s auto-delete setting.
+
+**Delete selected** and **Delete results** remove records and their saved files. Active tasks are skipped. To keep a file after removing its library record, save a copy first.
+
+## Record a screen
+
+Open **Screen recorder**, choose a source in the system sharing dialog, and include audio if that option is available. Play the segment you need, then stop recording and review the preview. Save it as MP4 to add the converted file to the library, or save the original recording directly.
+
+Recording stops after 10 minutes or 256 MB. The library MP4 is converted to up to 720p at 30 fps. You can also import an existing WebM or MP4 recording of up to 512 MB. Audio capture depends on the operating system and selected source. Test a short segment before recording a long clip.

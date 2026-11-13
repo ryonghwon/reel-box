@@ -2,6 +2,6 @@
 setlocal
 cd /d "%~dp0"
 docker compose stop
-echo Reelbox stopped. Your files and history are preserved.
+echo Reel Box stopped. Your files and history are preserved.
 pause
 endlocal

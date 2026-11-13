@@ -22,12 +22,12 @@ if not exist data mkdir data
 if not exist downloads mkdir downloads
 docker compose up -d --build
 if errorlevel 1 (
-  echo Reelbox could not start. Check the error above.
+  echo Reel Box could not start. Check the error above.
   pause
   exit /b 1
 )
 set "REELBOX_PORT=3000"
 for /f "tokens=2 delims==" %%P in ('findstr /b "WEB_PORT=" .env') do set "REELBOX_PORT=%%P"
 start "" "http://localhost:%REELBOX_PORT%"
-echo Reelbox is running. Use Stop-Reelbox.cmd to stop it.
+echo Reel Box is running. Use Stop-Reelbox.cmd to stop it.
 endlocal

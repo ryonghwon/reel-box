@@ -1,4 +1,4 @@
-Reel Box desktop 1.5.0
+Reel Box desktop 0.1.0
 
 Electron (MIT and Chromium/BSD third-party licenses): https://github.com/electron/electron
 Electron's LICENSE and LICENSES.chromium.html are included by the packager.

@@ -1,76 +1,86 @@
-# Reel Box
+<p align="center"><img src="desktop/assets/icon.png" width="72" alt="Reel Box icon"></p>
+<h1 align="center">Reel Box</h1>
+<p align="center">A local library for videos, images, and audio.</p>
+<p align="center"><a href="https://github.com/ryonghwon/reel-box/releases">Download</a> · <a href="docs/USAGE.md">User guide</a> · <a href="docs/CONFIGURATION.md">Storage and settings</a> · <a href="docs/BUILD.md">Build</a></p>
 
-Reel Box는 영상·이미지·오디오를 내려받아 로컬 폴더에 보관하는 데스크톱 미디어 라이브러리입니다. 여러 링크를 한 번에 추가하거나 Instagram 저장 목록을 가져와 다운로드할 수 있습니다.
+Reel Box saves media from supported platforms into folders on your computer. Add several links at once, or import an Instagram saved-posts export, then review the available media and choose what to download. Search, previews, and source links keep the resulting files organized in one library.
 
-![Reel Box library](docs/screenshots/library.png)
+Videos are saved as MP4 by default, with a choice of available resolutions. Images from the same post stay together; videos remain individually accessible. Files are kept until you delete them unless you explicitly enable automatic deletion.
 
-## 기능
+![Reel Box library guide](docs/images/library.png)
 
-- URL 일괄 등록과 중복 링크 확인
-- Instagram 저장 목록 가져오기: ZIP, JSON, HTML
-- MP4 저장, 해상도 선택, 오디오 추출
-- 게시물별 사진 묶음과 개별 영상 관리
-- 검색, 상태 필터, 카드·작은 썸네일·목록 보기
-- 병렬 다운로드, 실패 재시도, Instagram 로그인 창
-- 개별 파일, ZIP, CSV 내보내기
-- 저장 폴더, 파일명 규칙, 자동 삭제 설정
-- 화면·창 녹화와 MP4 변환
+## What you can do
 
-## 사용 안내
-
-| 문서 | 내용 |
+| Workflow | How it works |
 | --- | --- |
-| [사용 가이드](docs/USAGE.md) | 링크 추가, 저장 목록, 로그인, 다운로드, 파일 관리 |
-| [설정](docs/CONFIGURATION.md) | 저장 위치, 보관 정책, 파일명, 실행 환경 |
-| [설치와 빌드](docs/BUILD.md) | Docker 실행, 데스크톱 패키징, 검사 명령 |
-| [문제 해결](docs/TROUBLESHOOTING.md) | 연결, 인증, 다운로드, 저장 파일 오류 |
-| [구조](docs/ARCHITECTURE.md) | 앱 구성, 대기열, 데이터 흐름 |
+| Collect links | Paste up to 100 URLs at a time. Reel Box checks metadata, identifies media, and skips matching existing links. |
+| Import saved posts | Read Instagram export ZIP, JSON, or HTML files. Pause and resume an import without starting the list again. |
+| Choose the output | Use MP4, keep the original video format, or extract audio. Choose from the resolutions actually available for a video. |
+| Organize media | Switch between cards, compact thumbnails, and a list. Search titles, creators, and source links; filter by platform or task status. |
+| Recover failed items | Read the error for each item, retry eligible failures, or open Instagram items in the app’s signed-in window. |
+| Use files elsewhere | Open the download folder, save individual copies, or export a ZIP with a CSV manifest. |
+| Record a screen | Capture a source you select, review it, and add an MP4 copy to the library. |
 
-## 플랫폼
+Downloads run through a local queue. The desktop app includes its own runtime, so it does not require Docker, a separately opened browser, or an AI API key. Reel Box does not analyze your media.
 
-| 플랫폼 | 입력 |
+The app retains its Korean interface. This repository’s documentation and illustrated guides use English.
+
+## Install
+
+Choose a package from [Releases](https://github.com/ryonghwon/reel-box/releases).
+
+| System | Package |
 | --- | --- |
-| Instagram | Reels, 영상·사진 게시물, 저장 목록 |
-| YouTube | 영상, Shorts, 재생목록, 채널 |
-| Vimeo | 개별 영상 |
-| TikTok | 영상, 사진 게시물 |
-| X | 영상·사진 첨부 게시물 |
-| Threads | 미디어 첨부 게시물 |
-| Facebook | 영상·사진 첨부 게시물 |
+| Mac with Apple Silicon | `Reel-Box-<version>-macOS-arm64.zip` |
+| Windows x64 | `Reel-Box-<version>-Windows-x64-Setup.exe` |
 
-다운로드할 미디어와 화질은 해당 링크에서 제공되는 항목을 기준으로 표시합니다. 로그인이 필요한 Instagram 게시물은 앱의 전용 창에서 열어 저장합니다. 다른 플랫폼은 공개 링크를 사용합니다. 이용 권한이 있는 콘텐츠를 저장하세요.
+Extract the Mac archive and move **Reel Box.app** to Applications. On Windows, run the installer and choose the installation folder. Open the app, then use **Storage settings** to select a download location before importing a large list.
 
-## 실행
+Mac archives are ad-hoc signed and checked for integrity, but are not notarized by Apple. Windows packages are unsigned. Your operating system may require approval before first launch. Release assets include a checksum manifest. See the [build guide](docs/BUILD.md) for source setup and packaging details.
 
-데스크톱 패키지는 앱 창, 로컬 서버, 작업 대기열을 함께 실행합니다. Docker 실행은 브라우저에서 사용하는 별도 구성입니다.
+## Platform coverage
 
-소스에서 Docker로 실행하려면 저장소 루트에서 다음 명령을 실행합니다.
+| Platform | Accepted content |
+| --- | --- |
+| Instagram | Reels, video and photo posts, carousels, saved-post export files |
+| YouTube | Videos, Shorts, playlists, channels, audio extraction |
+| Vimeo | Individual videos |
+| TikTok | Video and photo posts |
+| X | Posts with video or image attachments |
+| Threads | Posts with media attachments |
+| Facebook | Video and photo posts |
 
-```sh
-sh scripts/setup.sh
-docker compose up --build -d
-```
+Coverage describes accepted inputs, not a guarantee that every post can be retrieved. Media availability depends on the platform response, attachment type, and access requirements. Reel Box reports the reason when an item cannot be downloaded.
 
-브라우저에서 [localhost:3000](http://localhost:3000)을 엽니다. Windows에서는 `Start-Reelbox.cmd`를 실행합니다. 세부 요구 사항과 설치 파일 생성 방법은 [설치와 빌드](docs/BUILD.md)에 있습니다.
+Instagram sign-in uses the app’s dedicated window. Other browser sessions are separate, and other platforms use accessible public links. Save content you have permission to use; the app does not bypass access restrictions or DRM.
 
-## 화면
+## Start with a few links
 
-<details>
-<summary>저장 목록 가져오기</summary>
+1. Select **Add links** and paste one URL per line.
+2. Choose **Detect media type** or **Audio only**, then select **Check links**.
+3. Select a ready item to review its preview, format, and resolution.
+4. Select **Start download**. Finished files appear in the item’s **Files** tab and in your download folder.
 
-![저장 목록 가져오기](docs/screenshots/saved-import.png)
+For a saved-post archive, open **Instagram saved posts** instead. The [user guide](docs/USAGE.md) explains import progress, image groups, signed-in retries, and exports.
 
-</details>
+## Documentation
 
-<details>
-<summary>저장 설정</summary>
+| Guide | Contents |
+| --- | --- |
+| [User guide](docs/USAGE.md) | Links, saved-post imports, sign-in, downloads, exports, and recording |
+| [Storage and settings](docs/CONFIGURATION.md) | Download locations, retention, filenames, runtime settings, and backups |
+| [Troubleshooting](docs/TROUBLESHOOTING.md) | Connection errors, restricted posts, failed tasks, and missing files |
+| [Build](docs/BUILD.md) | Desktop packaging, Docker setup, and validation commands |
+| [Architecture](docs/ARCHITECTURE.md) | Processes, queue state, media grouping, and authentication |
 
-![저장 설정](docs/screenshots/storage-settings.png)
+## Interface guides
 
-</details>
+These illustrations use example media and contain no personal library data.
 
-화면에는 예시 데이터를 사용했습니다.
+| Import saved posts | Storage settings |
+| --- | --- |
+| ![Import guide](docs/images/saved-import.png) | ![Storage guide](docs/images/storage-settings.png) |
 
-## 라이선스
+## License
 
-애플리케이션 코드는 [MIT License](LICENSE)를 따릅니다. 플랫폼 상표와 종속성에는 각 소유자의 권리 및 라이선스가 적용됩니다. 포함되는 런타임의 고지는 [THIRD-PARTY-NOTICES.txt](desktop/THIRD-PARTY-NOTICES.txt)에 있습니다.
+Application source is available under the [MIT License](LICENSE). Platform trademarks and bundled dependencies remain subject to their respective owners’ rights and licenses. See [Third-party notices](desktop/THIRD-PARTY-NOTICES.txt) for runtime notices.

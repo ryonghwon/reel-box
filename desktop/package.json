@@ -1,6 +1,6 @@
 {
   "name": "reelbox-desktop",
-  "version": "1.5.0",
+  "version": "0.1.0",
   "description": "Local media downloader and library",
   "author": "Reel Box",
   "license": "MIT",
@@ -10,14 +10,14 @@
     "build:web": "node scripts/build-web.cjs",
     "prepare:mac": "node scripts/prepare.cjs darwin-arm64",
     "prepare:win": "node scripts/prepare.cjs win32-x64",
-    "build:mac": "electron-builder --mac dir --arm64 --publish never",
+    "build:mac": "electron-builder --mac zip --arm64 --publish never",
     "build:win": "electron-builder --win nsis --x64 --publish never",
     "test": "node --test tests/*.test.cjs",
     "start": "electron ."
   },
   "devDependencies": {
     "electron": "45.0.0",
-    "electron-builder": "26.18.0"
+    "electron-builder": "26.18.1"
   },
   "build": {
     "appId": "local.reelbox.desktop",
@@ -67,16 +67,17 @@
     ],
     "mac": {
       "category": "public.app-category.video",
-      "identity": null,
+      "identity": "-",
       "target": [
-        "dir"
+        "zip"
       ],
       "hardenedRuntime": false,
       "extendInfo": {
         "NSMicrophoneUsageDescription": "\uc2dc\uc2a4\ud15c \ud654\uba74 \uacf5\uc720 \uae30\ub2a5\uc73c\ub85c \uc0ac\uc6a9\uc790\uac00 \uc120\ud0dd\ud55c \uc601\uc0c1 \uc18c\ub9ac\ub97c \ud3ec\ud568\ud560 \ub54c \uc0ac\uc6a9\ud569\ub2c8\ub2e4.",
         "NSScreenCaptureUsageDescription": "\uc0ac\uc6a9\uc790\uac00 \uc9c1\uc811 \uc120\ud0dd\ud55c \ud654\uba74\uc774\ub098 \ucc3d\uc744 \ub179\ud654\ud569\ub2c8\ub2e4."
       },
-      "icon": "assets/icon.icns"
+      "icon": "assets/icon.icns",
+      "artifactName": "Reel-Box-${version}-macOS-arm64.zip"
     },
     "win": {
       "target": [
@@ -98,5 +99,8 @@
       "installerIcon": "assets/icon.ico",
       "uninstallerIcon": "assets/icon.ico"
     }
+  },
+  "overrides": {
+    "minimatch": "11.0.1"
   }
 }

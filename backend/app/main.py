@@ -38,7 +38,7 @@ def authorize(x_api_key: str = Header(default="")):
 
 app = FastAPI(
     title="Reel Box",
-    version="1.5.0",
+    version="0.1.0",
     lifespan=lifespan,
     dependencies=[Depends(authorize)],
     docs_url=None,

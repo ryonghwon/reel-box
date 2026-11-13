@@ -5,7 +5,7 @@ from redis import Redis
 from rq import Queue, SimpleWorker
 from rq.job import Job, JobStatus
 from app import db, extractor, maintenance, storage, tasks
-from app.main import list_jobs
+from app.job_listing import list_jobs
 
 pytestmark = pytest.mark.skipif(
     not os.getenv("TEST_REDIS_URL"),

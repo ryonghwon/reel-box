@@ -1,5 +1,6 @@
 import json
-from app import db, main
+from app import db
+from app.config import MAX_JOBS
 
 
 def test_5000_import_resume_failed_dedup_and_export(client):
@@ -42,7 +43,7 @@ def test_5000_import_resume_failed_dedup_and_export(client):
     db.init()  # repeated initialization / app restart retains draft
     draft = client.get("/api/imports/instagram-saved/draft").json()["draft"]
     assert draft["cursor"] == 2000 and draft["preview"]["urls"][2000:] == urls[2000:]
-    assert draft["preview"]["available_slots"] == main.MAX_JOBS - 5000
+    assert draft["preview"]["available_slots"] == MAX_JOBS - 5000
     initial = client.get("/api/jobs").json()
     assert len(initial["jobs"]) == 5000
     selection = client.post("/api/exports", json={"ids": ids}).json()["selection"]

@@ -1,16 +1,9 @@
-import type { MediaJob } from "./ui";
+import type { MediaJob } from "./media";
 
-const active = new Set([
-  "queued_metadata",
-  "extracting",
-  "queued_download",
-  "downloading",
-  "recording",
-  "expiring",
-]);
+import { busyStates } from "./media.ts";
 function stateOf(items: MediaJob[]) {
   if (items.every((j) => j.status === "completed")) return "completed";
-  const running = items.find((j) => active.has(j.status));
+  const running = items.find((j) => busyStates.has(j.status));
   if (running) return running.status;
   if (items.some((j) => j.status === "failed")) return "failed";
   if (items.some((j) => j.status === "ready")) return "ready";

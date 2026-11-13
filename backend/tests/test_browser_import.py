@@ -37,7 +37,7 @@ def upload(client, raw, kind="image", source=URL, **extra):
 
 
 def enable(monkeypatch):
-    monkeypatch.setattr(importlib.import_module("app.main"), "DESKTOP", True)
+    monkeypatch.setattr(importlib.import_module("app.routes.browser"), "DESKTOP", True)
 
 
 def test_browser_import_is_desktop_only_and_keeps_auth(client):
@@ -153,7 +153,7 @@ def test_bad_and_oversize_imports_leave_no_files(client, monkeypatch):
         assert c.execute("SELECT count(*) FROM files").fetchone()[0] == 0
     assert row["status"] == "failed"
     assert not (storage.folder_path(row["settings"]["folder"]) / row["id"]).exists()
-    monkeypatch.setattr(importlib.import_module("app.main"), "MAX_BYTES", 8)
+    monkeypatch.setattr(importlib.import_module("app.routes.browser"), "MAX_BYTES", 8)
     assert upload(client, b"123456789").status_code == 413
 
 

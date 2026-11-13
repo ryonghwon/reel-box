@@ -2,7 +2,9 @@ import io
 import json
 import zipfile
 import pytest
-from app import db, extractor, tasks, saved_import, main
+from app import db, extractor, tasks, saved_import
+from app.routes import jobs as jobs_api
+from app.config import MAX_JOBS
 
 IG = "https://www.instagram.com/p/SamplePost01/"
 REEL = "https://www.instagram.com/reel/SampleReel02/"
@@ -114,7 +116,7 @@ def test_preview_does_not_register_and_repeated_import_dedups(client, monkeypatc
         content=export_fixture(),
     )
     assert r.status_code == 200
-    assert len(r.json()["urls"]) == 2 and r.json()["available_slots"] == main.MAX_JOBS
+    assert len(r.json()["urls"]) == 2 and r.json()["available_slots"] == MAX_JOBS
     assert client.get("/api/jobs").json()["jobs"] == []
     reg = client.post(
         "/api/jobs",
@@ -216,7 +218,7 @@ def test_auto_carousel_inherits_and_nonvideo_is_explicit(client, monkeypatch):
 
 def test_capacity_rolls_back_without_dropping_links(client, monkeypatch):
     client.post("/api/jobs", json={"urls": [IG]})
-    monkeypatch.setattr(main, "MAX_JOBS", 2)
+    monkeypatch.setattr(jobs_api, "MAX_JOBS", 2)
     response = client.post(
         "/api/jobs", json={"urls": [IG, REEL, "https://www.instagram.com/p/third/"]}
     )

@@ -2,6 +2,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { buildLibrary, expandSelection } from "./library";
 import Recorder from "./recorder";
+import { useLibrarySync } from "./use-library-sync";
+import MediaCard from "./media-card";
 import PlatformIcon from "./platform-icon";
 import BrandMark from "./brand-mark";
 import StorageSettings from "./storage-settings";
@@ -9,24 +11,12 @@ import PlatformGuide from "./platform-guide";
 import AddLinks from "./add-links";
 import Inspector from "./inspector";
 import SavedImport from "./saved-import";
-import {
-  api,
-  Icon,
-  Status,
-  Thumbnail,
-  MediaJob,
-  Settings,
-  Health,
-  names,
-  busyStates,
-  sizeLabel,
-} from "./ui";
+import { api } from "./api-client";
+import { MediaJob, names, busyStates, sizeLabel } from "./media";
+import { Icon } from "./ui";
 
 export default function Home() {
   const [view, setView] = useState("library"),
-    [jobs, setJobs] = useState<MediaJob[]>([]),
-    [settings, setSettings] = useState<Settings | null>(null),
-    [health, setHealth] = useState<Health | null>(null),
     [filter, setFilter] = useState("all"),
     [savedOnly, setSavedOnly] = useState(false),
     [platform, setPlatform] = useState("all"),
@@ -36,7 +26,6 @@ export default function Home() {
     [error, setError] = useState(""),
     [notice, setNotice] = useState(""),
     [busy, setBusy] = useState(false),
-    [loaded, setLoaded] = useState(false),
     [adding, setAdding] = useState(false),
     [layout, setLayout] = useState("grid"),
     [visibleCount, setVisibleCount] = useState(48);
@@ -70,8 +59,6 @@ export default function Home() {
       localStorage.setItem("reelbox.layout.v1", value);
     } catch {}
   }
-  const syncTime = useRef(0);
-  const pendingRefresh = useRef<Promise<void> | null>(null);
   const scrollRoot = useRef<HTMLDivElement>(null);
   const libraryMain = useRef<HTMLElement>(null);
   const loadMore = useRef<HTMLDivElement>(null);
@@ -98,64 +85,10 @@ export default function Home() {
       cancelAnimationFrame(frame);
     };
   }, [view]);
-  const refresh = useCallback(() => {
-    if (pendingRefresh.current) return pendingRefresh.current;
-    const task = (async () => {
-      const since = syncTime.current;
-      const [j, h] = await Promise.all([
-        api("jobs" + (since ? "?since=" + since : "")),
-        api("health"),
-      ]);
-      setJobs((previous) => {
-        if (!since) return j.jobs;
-        const live = new Set<string>(j.all_ids);
-        const merged = new Map(
-          previous
-            .filter((item) => live.has(item.id))
-            .map((item) => [item.id, item]),
-        );
-        for (const item of j.jobs as MediaJob[]) merged.set(item.id, item);
-        return Array.from(merged.values()).sort(
-          (a, b) => b.created_at - a.created_at,
-        );
-      });
-      syncTime.current = j.server_time;
-      setHealth(h);
-      setLoaded(true);
-    })();
-    pendingRefresh.current = task;
-    void task
-      .finally(() => {
-        pendingRefresh.current = null;
-      })
-      .catch(() => {});
-    return task;
-  }, []);
+  const { jobs, settings, setSettings, health, loaded, refresh } =
+    useLibrarySync();
   const updated = useCallback(() => {
     void refresh().catch((e) => setError(e.message));
-  }, [refresh]);
-  useEffect(() => {
-    let stopped = false;
-    let timer: ReturnType<typeof setTimeout>;
-    async function poll() {
-      try {
-        await refresh();
-      } catch {
-        if (!stopped) setHealth(null);
-      } finally {
-        if (!stopped) timer = setTimeout(poll, document.hidden ? 10000 : 2500);
-      }
-    }
-    void poll();
-    void api("settings")
-      .then((v) => {
-        if (!stopped) setSettings(v);
-      })
-      .catch(() => {});
-    return () => {
-      stopped = true;
-      clearTimeout(timer);
-    };
   }, [refresh]);
   useEffect(() => {
     function shortcut(e: KeyboardEvent) {
@@ -168,9 +101,17 @@ export default function Home() {
     return () => window.removeEventListener("keydown", shortcut);
   }, []);
   const libraryItems = useMemo(() => buildLibrary(jobs), [jobs]);
-  const completed = jobs.filter((j) => j.status === "completed"),
-    ready = jobs.filter((j) => j.status === "ready"),
-    failed = libraryItems.filter((j) => j.status === "failed");
+  const { completed, ready } = useMemo(
+    () => ({
+      completed: jobs.filter((j) => j.status === "completed"),
+      ready: jobs.filter((j) => j.status === "ready"),
+    }),
+    [jobs],
+  );
+  const failed = useMemo(
+    () => libraryItems.filter((j) => j.status === "failed"),
+    [libraryItems],
+  );
   const originalLinks = new Set(
     jobs
       .filter(
@@ -182,13 +123,17 @@ export default function Home() {
       )
       .map((j) => j.platform + ":" + j.url),
   ).size;
-  const baseJobs = libraryItems.filter(
-    (j) =>
-      (!savedOnly || j.options?.source === "instagram_saved") &&
-      (platform === "all" || j.platform === platform) &&
-      `${j.metadata.title || ""} ${j.metadata.uploader || ""} ${j.url} ${names[j.platform]}`
-        .toLowerCase()
-        .includes(query.toLowerCase()),
+  const baseJobs = useMemo(
+    () =>
+      libraryItems.filter(
+        (j) =>
+          (!savedOnly || j.options?.source === "instagram_saved") &&
+          (platform === "all" || j.platform === platform) &&
+          `${j.metadata.title || ""} ${j.metadata.uploader || ""} ${j.url} ${names[j.platform]}`
+            .toLowerCase()
+            .includes(query.toLowerCase()),
+      ),
+    [libraryItems, savedOnly, platform, query],
   );
   const albumCount = baseJobs.filter((j) => (j.image_count || 0) > 0).length;
   const videoCount = baseJobs.filter(
@@ -794,70 +739,14 @@ export default function Home() {
                 {paged.length ? (
                   <div className={`media-${layout}`}>
                     {paged.map((j) => (
-                      <article
+                      <MediaCard
                         key={j.id}
-                        className={`media-card ${focused?.id === j.id ? "focused" : ""} ${selected.has(j.id) ? "selected" : ""}`}
-                      >
-                        <div className="card-image">
-                          <button
-                            className="preview-trigger"
-                            aria-label={`${j.metadata.title || j.url} 상세 보기`}
-                            onClick={() => setFocus(j.id)}
-                          >
-                            <Thumbnail job={j} />
-                          </button>
-                          <input
-                            className="card-checkbox"
-                            type="checkbox"
-                            aria-label={`${j.metadata.title || j.url} 선택`}
-                            checked={selected.has(j.id)}
-                            onChange={() => toggle(j.id)}
-                          />
-                          <span className="media-format">
-                            {j.members
-                              ? j.image_count
-                                ? `사진 ${j.image_count}장`
-                                : "종류 확인 중"
-                              : j.metadata.media_type === "image"
-                                ? "IMAGE"
-                                : j.mode === "audio" ||
-                                    j.metadata.media_type === "audio"
-                                  ? "AUDIO"
-                                  : j.files[0]?.name
-                                      .split(".")
-                                      .pop()
-                                      ?.toUpperCase() || "VIDEO"}
-                          </span>
-                        </div>
-                        <button
-                          className="card-copy"
-                          onClick={() => setFocus(j.id)}
-                        >
-                          <strong title={j.metadata.title || j.url}>
-                            {j.metadata.title ||
-                              j.url.split("/").filter(Boolean).pop() ||
-                              "미디어 확인 중"}
-                          </strong>
-                          <span className="card-author">
-                            {j.metadata.uploader || names[j.platform]}
-                            <span>·</span>
-                            {j.display_caption ||
-                              (j.metadata.max_height
-                                ? `${j.metadata.max_height}p`
-                                : names[j.platform])}
-                          </span>
-                        </button>
-                        <div className="card-bottom">
-                          <Status job={j} />
-                          <span>
-                            {j.members
-                              ? `${j.completed_count || 0}/${j.members.length}개 저장`
-                              : j.files[0]
-                                ? sizeLabel(j.files[0].size)
-                                : names[j.platform]}
-                          </span>
-                        </div>
-                      </article>
+                        job={j}
+                        focused={focused?.id === j.id}
+                        selected={selected.has(j.id)}
+                        onFocus={setFocus}
+                        onToggle={toggle}
+                      />
                     ))}
                   </div>
                 ) : (

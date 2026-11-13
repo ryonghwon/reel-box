@@ -1,9 +1,11 @@
 import logging
 import time
+
 from redis import Redis
 from rq import Queue
-from rq.job import Job
 from rq.exceptions import NoSuchJobError
+from rq.job import Job
+
 from . import db, storage
 from .config import REDIS_URL
 

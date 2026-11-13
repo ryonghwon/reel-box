@@ -1,12 +1,13 @@
 import json
 import mimetypes
+import subprocess
 import time
 import uuid
-import subprocess
+
 from . import db, extractor, storage
+from .config import MAX_BYTES, MAX_JOBS
 from .errors import classify
 from .urls import normalize
-from .config import MAX_JOBS, MAX_BYTES
 
 
 def run(job_id, phase, attempt):

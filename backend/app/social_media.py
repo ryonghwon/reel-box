@@ -3,9 +3,11 @@
 import json
 import re
 from html.parser import HTMLParser
-from urllib.parse import urlsplit, parse_qs, urlencode, urlunsplit
-from yt_dlp.extractor.twitter import TwitterIE
+from urllib.parse import parse_qs, urlencode, urlsplit, urlunsplit
+
 from yt_dlp.extractor.tiktok import TikTokIE
+from yt_dlp.extractor.twitter import TwitterIE
+
 from .instagram_media import InstagramMediaIE
 
 

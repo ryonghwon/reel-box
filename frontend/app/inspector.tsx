@@ -1,15 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import {
-  Icon,
-  Status,
-  Thumbnail,
-  MediaJob,
-  names,
-  busyStates,
-  sizeLabel,
-  duration,
-} from "./ui";
+import { MediaJob, names, busyStates, sizeLabel, duration } from "./media";
+import { Icon, Status, Thumbnail } from "./ui";
 
 export default function Inspector({
   job: item,

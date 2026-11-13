@@ -340,8 +340,8 @@ export default function Recorder({ onSaved }: { onSaved: () => void }) {
           <li>
             <strong>영상 탭 선택하기</strong>
             <p>
-              ‘화면 선택’을 누르고 해당 탭을 골라요. 소리가 필요하면 탭 오디오도
-              공유하세요.
+              ‘화면 선택’을 누르고 녹화할 탭을 선택하세요. 소리가 필요하면 탭
+              오디오도 공유하세요.
             </p>
           </li>
           <li>
@@ -351,8 +351,8 @@ export default function Recorder({ onSaved }: { onSaved: () => void }) {
           <li>
             <strong>MP4 파일로 가져가기</strong>
             <p>
-              저장하면 720p·30fps MP4로 변환됩니다. 받은 파일은 원하는 AI 도구에
-              직접 올리세요.
+              녹화가 끝나면 720p·30fps MP4로 저장합니다. 저장한 영상은
+              라이브러리에서 확인할 수 있습니다.
             </p>
           </li>
         </ol>

@@ -1,7 +1,7 @@
 {
   "name": "reelbox-desktop",
   "version": "1.5.0",
-  "description": "Personal video library for Windows and macOS",
+  "description": "Local media downloader and library",
   "author": "Reel Box",
   "license": "MIT",
   "private": true,
@@ -30,7 +30,6 @@
     "files": [
       "main.cjs",
       "preload.cjs",
-      "capture.html",
       "splash.html",
       "package.json",
       "assets/icon.png",
@@ -74,8 +73,8 @@
       ],
       "hardenedRuntime": false,
       "extendInfo": {
-        "NSMicrophoneUsageDescription": "시스템 화면 공유 기능으로 사용자가 선택한 영상 소리를 포함할 때 사용합니다.",
-        "NSScreenCaptureUsageDescription": "사용자가 직접 선택한 화면이나 창을 녹화합니다."
+        "NSMicrophoneUsageDescription": "\uc2dc\uc2a4\ud15c \ud654\uba74 \uacf5\uc720 \uae30\ub2a5\uc73c\ub85c \uc0ac\uc6a9\uc790\uac00 \uc120\ud0dd\ud55c \uc601\uc0c1 \uc18c\ub9ac\ub97c \ud3ec\ud568\ud560 \ub54c \uc0ac\uc6a9\ud569\ub2c8\ub2e4.",
+        "NSScreenCaptureUsageDescription": "\uc0ac\uc6a9\uc790\uac00 \uc9c1\uc811 \uc120\ud0dd\ud55c \ud654\uba74\uc774\ub098 \ucc3d\uc744 \ub179\ud654\ud569\ub2c8\ub2e4."
       },
       "icon": "assets/icon.icns"
     },

@@ -1,4 +1,3 @@
-// Original Reel Box mark: a film reel resting inside an archive tray.
 export default function BrandMark({ size = 24 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">

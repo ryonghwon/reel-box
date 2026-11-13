@@ -52,7 +52,7 @@ function find(dir, name) {
   );
   if (!fs.existsSync(pythonSource))
     throw Error(
-      `Install Python 3.12.14 for ${target} into work/python-runtimes first.`,
+      `Python runtime not found: ${pythonSource}`,
     );
   const py = path.join(out, "python");
   if (!fs.existsSync(py))

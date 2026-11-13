@@ -4,7 +4,7 @@ import time
 import zipfile
 from pathlib import Path
 from app import db, storage
-from app.main import archive
+from app.routes.exports import archive
 from app.config import ROOT
 
 

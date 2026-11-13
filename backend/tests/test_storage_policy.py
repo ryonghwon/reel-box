@@ -5,7 +5,7 @@ import zipfile
 
 import pytest
 from app import db, storage, tasks
-from app import main
+from app.routes import settings as settings_api
 
 
 def completed(client, url, snapshot=None):
@@ -51,7 +51,7 @@ def test_disable_retention_protects_existing_and_inflight(client):
 def test_custom_location_keeps_old_files_and_limits_paths(
     client, tmp_path, monkeypatch
 ):
-    monkeypatch.setattr(main, "DESKTOP", True)
+    monkeypatch.setattr(settings_api, "DESKTOP", True)
     monkeypatch.setattr(storage, "DESKTOP", True)
     old, oldpath = completed(client, "https://www.instagram.com/p/ABCD1234/")
     destination = tmp_path / "chosen"

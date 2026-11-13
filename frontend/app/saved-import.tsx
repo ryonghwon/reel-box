@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { api, Icon } from "./ui";
+import { api } from "./api-client";
+import { Icon } from "./ui";
 type Preview = {
   draft_id: string;
   urls: string[];

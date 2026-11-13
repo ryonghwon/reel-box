@@ -8,13 +8,13 @@ fs.rmSync(stage, { recursive: true, force: true });
 fs.mkdirSync(stage, { recursive: true });
 fs.cpSync(path.join(source, "app"), path.join(stage, "app"), {
   recursive: true,
-  filter: (p) => !p.includes(path.join("app", "api")),
+  filter: (p) => p !== path.join(source, "app", "api"),
 });
 for (const name of ["package.json", "tsconfig.json", "next-env.d.ts"])
   fs.copyFileSync(path.join(source, name), path.join(stage, name));
 fs.writeFileSync(
   path.join(stage, "next.config.ts"),
-  "export default {output:'export',images:{unoptimized:true},poweredByHeader:false};\n",
+  `export default ${JSON.stringify({output:"export",images:{unoptimized:true},poweredByHeader:false,turbopack:{root:path.dirname(desktop)}})};\n`,
 );
 fs.symlinkSync(
   path.join(source, "node_modules"),

@@ -1,5 +1,6 @@
 "use client";
-import { Icon, Settings } from "./ui";
+import { Settings } from "./media";
+import { Icon } from "./ui";
 type Props = {
   settings: Settings;
   storagePath: string;

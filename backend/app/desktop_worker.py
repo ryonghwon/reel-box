@@ -1,4 +1,5 @@
 import sys
+
 from .tasks import run
 
 if __name__ == "__main__":

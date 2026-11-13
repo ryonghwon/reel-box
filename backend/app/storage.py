@@ -3,8 +3,9 @@ import shutil
 import string
 from datetime import datetime, timezone
 from pathlib import Path
-from .config import ROOT, MIN_FREE, DESKTOP
+
 from . import db
+from .config import DESKTOP, MIN_FREE, ROOT
 
 FIELDS = {"date", "platform", "title", "id", "uploader"}
 

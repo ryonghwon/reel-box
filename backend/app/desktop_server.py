@@ -6,10 +6,12 @@ import socket
 import sys
 import threading
 from pathlib import Path
+
 import uvicorn
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
-from .egress import Server, Proxy
+
+from .egress import Proxy, Server
 
 
 def main():
